@@ -7,6 +7,10 @@ const swaggerFile = require("../swagger-output.json");
 const testRoute = require("./test/arUnity.test.route");
 //#endregion
 
+//#region
+const patientRoute = require("./paciente/paciente.route");
+//#endregion
+
 //#endregion
 
 function routerApi(app) {
@@ -15,6 +19,7 @@ function routerApi(app) {
   app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
   router.use("/test", testRoute);
+  router.use("/pacientes", patientRoute);
 }
 
 module.exports = routerApi;
