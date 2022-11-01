@@ -1,0 +1,29 @@
+{
+  "name": "api-proyecto-ar",
+  "version": "1.0.0",
+  "description": "API PARA LA APLICACIÓN EN REALIDAD AUMENTADA",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "dev-swagger": "node swagger.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "s"
+  },
+  "author": "Paola Andrea Alvarez Tarifa",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.3",
+    "pg": "^8.7.3",
+    "swagger-autogen": "^2.22.0",
+    "swagger-ui-express": "^4.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
