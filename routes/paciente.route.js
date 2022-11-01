@@ -1,5 +1,5 @@
 const express = require("express");
-const controller = require("../../controllers/paciente/paciente.controller");
+const controller = require("../controllers/paciente.controller");
 
 const api = express.Router();
 

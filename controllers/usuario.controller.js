@@ -1,9 +1,17 @@
 const pool = require("../../database");
 
-//patient = paciente
-//getPatients = obtiene todas los registros de la tabla paciente
-async function getPatients(req, res) {
-  const query = `SELECT * FROM public.paciente WHERE estado = true;`;
+//user = Usuario
+//login = Es el inicio de sesion
+async function login(req, res) {
+  const { user, password } = req.body;
+  const query = `SELECT 
+  persona.ci, usuario.password 
+  FROM usuario 
+  INNER JOIN persona 
+  ON persona.id_persona = usuario.id_persona 
+  WHERE persona.ci = ${user} 
+  AND usuario.password = ${password} 
+  AND usuario.estado = true;`;
 
   pool
     .query(query)
@@ -11,13 +19,13 @@ async function getPatients(req, res) {
       if (result.rowCount > 0) {
         res.status(201).send({
           code: 201,
-          message: "Pacientes obtenidos correctamente",
+          message: "Inicio de sesión correcto",
           data: result.rows,
         });
       } else {
         res.status(404).send({
           code: 404,
-          message: "No se pudo obtener la información",
+          message: "Carnet o contraseña incorrectos",
           data: result.rows,
         });
       }
@@ -31,23 +39,28 @@ async function getPatients(req, res) {
     });
 }
 
-//getPatient = obtiene un registro de la tabla getPatient por ID
-async function getPatient(req, res) {
+//getMe = Obtiene la información del usuario por ID
+async function getMe(req, res) {
   const { id } = req.params;
-  const query = `SELECT * FROM public.paciente WHERE id_consulta = ${id} estado = true;`;
+  const query = `SELECT * 
+  FROM usuario 
+  INNER JOIN persona 
+  ON persona.id_persona = usuario.id_persona 
+  WHERE usuario.id=${id} AND usuario.estado = true;`;
+
   pool
     .query(query)
     .then((result) => {
       if (result.rowCount > 0) {
         res.status(201).send({
           code: 201,
-          message: "Paciente obtenidos correctamente",
+          message: "Usuario obtenido correctamente",
           data: result.rows,
         });
       } else {
         res.status(404).send({
           code: 404,
-          message: "No se pudo obtener la información",
+          message: "Usuario inexistente",
           data: result.rows,
         });
       }
@@ -62,6 +75,6 @@ async function getPatient(req, res) {
 }
 
 module.exports = {
-  getPatients,
-  getPatient,
+  login,
+  getMe,
 };
