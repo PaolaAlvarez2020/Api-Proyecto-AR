@@ -1,9 +1,9 @@
 const pool = require("../database");
 
-const nameTable = "persona";
-//person = persona
-//getPersons = obtiene todas los registros de la tabla persona
-async function getPersons(req, res) {
+const nameTable = "enfermedad";
+//disease = enfermedad
+//getDiseases = obtiene todas los registros de la tabla enfermedad
+async function getDiseases(req, res) {
   const query = `SELECT * FROM ${nameTable};`;
 
   console.log(query);
@@ -14,7 +14,7 @@ async function getPersons(req, res) {
       if (result.rowCount > 0) {
         res.status(201).send({
           code: 201,
-          message: "Personas obtenidos correctamente",
+          message: "Enfermedades obtenidos correctamente",
           data: result.rows,
         });
       } else {
@@ -34,10 +34,10 @@ async function getPersons(req, res) {
     });
 }
 
-//getPerson = obtiene un registro de la tabla getPerson por ID
-async function getPerson(req, res) {
+//getDisease = obtiene un registro de la tabla getDisease por ID
+async function getDisease(req, res) {
   const { id } = req.params;
-  const query = `SELECT * FROM ${nameTable} WHERE id_persona = ${id}`;
+  const query = `SELECT * FROM ${nameTable} WHERE id_enfermedad = ${id}`;
 
   console.log(query);
 
@@ -48,7 +48,7 @@ async function getPerson(req, res) {
       if (result.rowCount > 0) {
         res.status(201).send({
           code: 201,
-          message: "Persona obtenidos correctamente",
+          message: "Énfermedad obtenidos correctamente",
           data: result.rows,
         });
       } else {
@@ -68,10 +68,10 @@ async function getPerson(req, res) {
     });
 }
 
-//addPerson = Agrega un persona
-async function addPerson(req, res) {
+//addDisease = Agrega un enfermedad
+async function addDisease(req, res) {
   const {
-    nombre_persona,
+    nombre_enfermedad,
     apellido_paterno,
     apellido_materno,
     telefono,
@@ -84,7 +84,7 @@ async function addPerson(req, res) {
   } = req.body;
 
   const query = `INSERT INTO ${nameTable} 
-  (nombre_persona,
+  (nombre_enfermedad,
     apellido_paterno,
     apellido_materno,
     telefono,
@@ -94,7 +94,7 @@ async function addPerson(req, res) {
     ciudad,
     id_foto,
     ci) 
-  VALUES ('${nombre_persona}', 
+  VALUES ('${nombre_enfermedad}', 
   '${apellido_paterno}', 
   '${apellido_materno}', 
   '${telefono}', 
@@ -104,7 +104,7 @@ async function addPerson(req, res) {
   '${ciudad}',
   '${id_foto}',
   '${ci}') 
-  RETURNING id_persona`;
+  RETURNING id_enfermedad`;
 
   console.log(query);
 
@@ -114,7 +114,7 @@ async function addPerson(req, res) {
       console.log(result.rows);
       res.status(200).send({
         code: 201,
-        message: "Persona registrado correctamente",
+        message: "Énfermedad registrado correctamente",
         data: result.rows,
       });
     })
@@ -128,10 +128,10 @@ async function addPerson(req, res) {
     });
 }
 
-//updatePerson = Modifica un persona por ID
-async function updatePerson(req, res) {
+//updateDisease = Modifica un enfermedad por ID
+async function updateDisease(req, res) {
   const {
-    nombre_persona,
+    nombre_enfermedad,
     apellido_paterno,
     apellido_materno,
     telefono,
@@ -146,7 +146,7 @@ async function updatePerson(req, res) {
 
   const query = `UPDATE ${nameTable} 
   SET 
-  nombre_persona = '${nombre_persona}', 
+  nombre_enfermedad = '${nombre_enfermedad}', 
   apellido_paterno = '${apellido_paterno}', 
   apellido_materno = '${apellido_materno}', 
   telefono = '${telefono}', 
@@ -156,7 +156,7 @@ async function updatePerson(req, res) {
   ciudad = '${ciudad}', 
   id_foto = '${id_foto}', 
   ci = '${ci}' 
-  WHERE id_persona = ${id}`;
+  WHERE id_enfermedad = ${id}`;
 
   console.log(query);
 
@@ -165,7 +165,7 @@ async function updatePerson(req, res) {
     .then((result) => {
       res.status(200).send({
         code: 201,
-        message: "Persona actualizado correctamente",
+        message: "Énfermedad actualizado correctamente",
         data: result.rows,
       });
     })
@@ -179,12 +179,12 @@ async function updatePerson(req, res) {
     });
 }
 
-//deletePerson = Elimina un persona por ID
-async function deletePerson(req, res) {
+//deleteDisease = Elimina un enfermedad por ID
+async function deleteDisease(req, res) {
   const { id } = req.params;
 
   const query = `DELETE FROM ${nameTable} 
-  WHERE id_persona = ${id}`;
+  WHERE id_enfermedad = ${id}`;
 
   console.log(query);
 
@@ -193,7 +193,7 @@ async function deletePerson(req, res) {
     .then((result) => {
       res.status(200).send({
         code: 201,
-        message: "Persona eliminado correctamente",
+        message: "Énfermedad eliminado correctamente",
         data: result.rows,
       });
     })
@@ -208,9 +208,9 @@ async function deletePerson(req, res) {
 }
 
 module.exports = {
-  getPersons,
-  getPerson,
-  addPerson,
-  updatePerson,
-  deletePerson,
+  getDiseases,
+  getDisease,
+  addDisease,
+  updateDisease,
+  deleteDisease,
 };

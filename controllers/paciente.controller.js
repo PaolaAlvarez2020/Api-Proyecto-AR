@@ -38,14 +38,15 @@ async function getPatients(req, res) {
 async function getPatientsWithPersonUserInfo(req, res) {
   const query = `SELECT * FROM ${nameTable} 
   INNER JOIN usuario ON usuario.id_usuario = paciente.id_usuario
-  INNER JOIN persona ON persona.id_persona = usuario.id_persona
-  WHERE usuario.estado = true AND paciente.estado = true;`;
+  INNER JOIN persona ON persona.id_persona = usuario.id_persona 
+  WHERE usuario.estado_usuario = true AND paciente.estado_paciente = true;`;
 
   console.log(query);
 
   pool
     .query(query)
     .then((result) => {
+      // console.log(result.rows);
       if (result.rowCount > 0) {
         res.status(201).send({
           code: 201,
@@ -61,6 +62,7 @@ async function getPatientsWithPersonUserInfo(req, res) {
       }
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send({
         code: 500,
         message: "Error del servidor: " + err.message,
@@ -102,13 +104,88 @@ async function getPatient(req, res) {
     });
 }
 
+async function getPatientWithPersonUserInfo(req, res) {
+  const { id } = req.params;
+  const query = `SELECT * FROM ${nameTable} 
+  INNER JOIN usuario ON usuario.id_usuario = paciente.id_usuario
+  INNER JOIN persona ON persona.id_persona = usuario.id_persona 
+  WHERE paciente.id_paciente = ${id} AND paciente.estado_paciente = true;`;
+
+  console.log(query);
+
+  pool
+    .query(query)
+    .then((result) => {
+      if (result.rowCount > 0) {
+        res.status(201).send({
+          code: 201,
+          message: "Paciente obtenidos correctamente",
+          data: result.rows,
+        });
+      } else {
+        res.status(404).send({
+          code: 404,
+          message: "No se pudo obtener la información",
+          data: result.rows,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        code: 500,
+        message: "Error del servidor: " + err.message,
+        error: err,
+      });
+    });
+}
+
+async function getPatientsWithPersonUserInfoSearch(req, res) {
+  const { ci } = req.query;
+  const query = `SELECT * FROM ${nameTable} 
+  INNER JOIN usuario ON usuario.id_usuario = paciente.id_usuario
+  INNER JOIN persona ON persona.id_persona = usuario.id_persona 
+  WHERE usuario.estado_usuario = true 
+  AND paciente.estado_paciente = true 
+  AND persona.ci LIKE '%${ci}%'`;
+
+  console.log(query);
+
+  pool
+    .query(query)
+    .then((result) => {
+      if (result.rowCount > 0) {
+        res.status(201).send({
+          code: 201,
+          message: "Paciente obtenidos correctamente",
+          data: result.rows,
+        });
+      } else {
+        res.status(404).send({
+          code: 404,
+          message: "No se pudo obtener la información",
+          data: result.rows,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        code: 500,
+        message: "Error del servidor: " + err.message,
+        error: err,
+      });
+    });
+}
+
 //addPatient = Agrega un paciente
 async function addPatient(req, res) {
-  const { id_usuario, favorito, estado } = req.body;
+  const { id_usuario, favorito, estado_paciente } = req.body;
 
   const query = `INSERT INTO ${nameTable} 
-  (id_usuario, favorito, estado) 
-  VALUES ('${id_usuario}', ${favorito}, ${estado})`;
+  (id_usuario, favorito, estado_paciente) 
+  VALUES ('${id_usuario}', ${favorito}, ${estado_paciente}) 
+  RETURNING id_paciente`;
 
   console.log(query);
 
@@ -163,10 +240,10 @@ async function updatePatient(req, res) {
 
 //deletePatient = Elimina un paciente por ID
 async function deletePatient(req, res) {
-  const { id_paciente } = req.params;
+  const { id } = req.params;
 
   const query = `DELETE FROM ${nameTable} 
-  WHERE id_paciente = ${id_paciente}`;
+  WHERE id_paciente = ${id}`;
 
   console.log(query);
 
@@ -180,6 +257,7 @@ async function deletePatient(req, res) {
       });
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send({
         code: 500,
         message: "Error del servidor: " + err.message,
@@ -192,7 +270,9 @@ module.exports = {
   getPatients,
   getPatient,
   getPatientsWithPersonUserInfo,
+  getPatientWithPersonUserInfo,
   addPatient,
   updatePatient,
   deletePatient,
+  getPatientsWithPersonUserInfoSearch,
 };
